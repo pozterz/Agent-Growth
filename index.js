@@ -20,7 +20,11 @@ exports.AgentGrowth = functions.https.onRequest((req, res) => {
   let msgSource = req.body.events[0].source
   let msg = req.body.events[0].message.text
 
-  console.log(msg, /ยกเลิกวันคอมโบ วันที่ /g.test(msg) , /ยกเลิกนัดคอมโบ วันที่ /g.test(msg));
+  console.log(
+    msg,
+    /ยกเลิกวันคอมโบ วันที่ /g.test(msg),
+    /ยกเลิกนัดคอมโบ วันที่ /g.test(msg)
+  )
 
   if (
     [
@@ -42,9 +46,9 @@ exports.AgentGrowth = functions.https.onRequest((req, res) => {
     core
       .isAdmin(msgSource)
       .then(querySnapshot => {
-        console.log(querySnapshot);
+        console.log(querySnapshot)
         if (querySnapshot.size) {
-          console.log('u r admin');
+          console.log("u r admin")
           core.initComboDate(reply_token, msg)
         }
         return res.send("OK")
@@ -52,13 +56,18 @@ exports.AgentGrowth = functions.https.onRequest((req, res) => {
       .catch(err => {
         console.log(err)
       })
-  } else if (/ยกเลิกวันคอมโบ วันที่ /g.test(msg) || /ยกเลิกวันคอมโบวันที่ /g.test(msg) || /ยกเลิกนัดคอมโบ วันที่ /g.test(msg) || /ยกเลิกนัดคอมโบวันที่ /g.test(msg)) {
+  } else if (
+    /ยกเลิกวันคอมโบ วันที่ /g.test(msg) ||
+    /ยกเลิกวันคอมโบวันที่ /g.test(msg) ||
+    /ยกเลิกนัดคอมโบ วันที่ /g.test(msg) ||
+    /ยกเลิกนัดคอมโบวันที่ /g.test(msg)
+  ) {
     core
       .isAdmin(msgSource)
       .then(querySnapshot => {
-        console.log(querySnapshot);
+        console.log(querySnapshot)
         if (querySnapshot.size) {
-          console.log('u r admin');
+          console.log("u r admin")
           core.removeComboDate(reply_token, msg)
         }
         return res.send("OK")
@@ -85,9 +94,12 @@ exports.AgentGrowth = functions.https.onRequest((req, res) => {
 })
 
 exports.checkComboDate = functions.https.onRequest((req, res) => {
-  core.checkComboDate().then(() => {
-    return res.send("OK")
-  }).catch(err => {
-    console.log(err)
-  })
+  core
+    .checkComboDate()
+    .then(() => {
+      return res.send("OK")
+    })
+    .catch(err => {
+      console.log(err)
+    })
 })
