@@ -1,5 +1,6 @@
 const functions = require("firebase-functions")
 const core = require("./components/core")
+const message = require("./components/message")
 
 exports.AgentGrowth = functions.https.onRequest((req, res) => {
   if (req.body.events[0].type === "join") {
@@ -103,3 +104,10 @@ exports.checkComboDate = functions.https.onRequest((req, res) => {
       console.log(err)
     })
 })
+
+exports.scheduledFunction = functions.pubsub.schedule("every tue 10:30").timeZone('Asia/Bangkok').onRun((context) => {
+
+  let msg = 'วันนี้วันอังคารแล้ว เขียน weekly focus กันเถอะ 🎉🎉🎉\nhttps://trello.com/c/14QzfWcd'
+
+  return message.push("C360124b5c1cfc907a702b9314337ac7b", msg);
+});
