@@ -2,7 +2,7 @@ const request = require("request-promise")
 const LINE_MESSAGING_API = "https://api.line.me/v2/bot/message"
 const LINE_HEADER = {
   "Content-Type": "application/json",
-  Authorization: `Bearer UE2sRsxbaA7J6KsDW3xXph++quWpQMN29NlncGlDoGPVkBNLqtfGBe9WEjqeHinrRTQkFJojtogHVbc+eqA4xiyoqeNwjvla3xUbOBEQSVzbY9v/mRE16BzbFVcTO+Zuqo2FDbVya7vfytgnY7xP2gdB04t89/1O/w1cDnyilFU=`
+  Authorization: `Bearer <APIKEY>`
 }
 
 const reply = (reply_token, msg) => {
