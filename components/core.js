@@ -313,7 +313,7 @@ const getUserId = (reply_token, source) => {
 
 async function getWeeklyID() {
   const options = {
-    url: 'https://api.trello.com/1/boards/5bbac3a9f80c3e73b4ba2e05/cards/?limit=1&fields=name&key=705ca72daa4188bb16d5cbf5341f7881&token=3a76a5f606ffb4db4371ee1a59a27f7adbbcce8c8bb30f0469c21be1faed1643',
+    url: 'https://api.trello.com/1/boards/5bbac3a9f80c3e73b4ba2e05/cards/?limit=6&key=705ca72daa4188bb16d5cbf5341f7881&token=3a76a5f606ffb4db4371ee1a59a27f7adbbcce8c8bb30f0469c21be1faed1643',
     method: 'GET',
     headers: {
       'Accept': 'application/json',

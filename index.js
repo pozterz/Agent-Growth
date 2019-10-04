@@ -105,9 +105,12 @@ exports.checkComboDate = functions.https.onRequest((req, res) => {
     })
 })
 
-exports.scheduledFunction = functions.pubsub.schedule("every tue 10:30").timeZone('Asia/Bangkok').onRun((context) => {
+exports.scheduledFunction = functions.pubsub.schedule("every tue 10:30").timeZone('Asia/Bangkok').onRun(async (context) => {
+  const weeklyIDResponse = await core.getWeeklyID()
+  const weeklyObj = JSON.parse(weeklyIDResponse)
+  const weeklyUrl = weeklyObj[0].shortUrl
 
-  let msg = 'วันนี้วันอังคารแล้ว เขียน weekly focus กันเถอะ 🎉🎉🎉\nhttps://trello.com/c/14QzfWcd'
+  let msg = `วันนี้วันอังคารแล้ว เขียน weekly focus กันเถอะ 🎉🎉🎉\n${weeklyUrl}`
 
   return message.push("C360124b5c1cfc907a702b9314337ac7b", msg);
 });
