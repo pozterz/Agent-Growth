@@ -105,9 +105,37 @@ exports.checkComboDate = functions.https.onRequest((req, res) => {
     })
 })
 
-exports.scheduledFunction = functions.pubsub.schedule("every tue 10:30").timeZone('Asia/Bangkok').onRun((context) => {
+exports.scheduledFunction = functions.pubsub.schedule("every tue 10:30").timeZone('Asia/Bangkok').onRun(async (context) => {
+  const weeklyIDResponse = await core.getWeeklyID()
+  const weeklyObj = JSON.parse(weeklyIDResponse)
+  const weeklyUrl = weeklyObj[0].shortUrl
 
-  let msg = 'วันนี้วันอังคารแล้ว เขียน weekly focus กันเถอะ 🎉🎉🎉\nhttps://trello.com/c/14QzfWcd'
+  let msg = `วันนี้วันอังคารแล้ว เขียน weekly focus กันเถอะ 🎉🎉🎉\n${weeklyUrl}`
 
   return message.push("C360124b5c1cfc907a702b9314337ac7b", msg);
+});
+
+exports.scheduledEndFunction = functions.pubsub.schedule("every fri 16:30").timeZone('Asia/Bangkok').onRun(async (context) => {
+  const weeklyIDResponse = await core.getWeeklyID()
+  // console.log('weeklyIDResponse = ' + weeklyIDResponse)
+  const weeklyObj = JSON.parse(weeklyIDResponse)
+  const weeklyID = weeklyObj[0].id
+  const checklists = await core.getCardCheckList(weeklyID)
+  // console.log('checklists = ' + checklists)
+
+  var listName = 'วันศุกร์แล้ววววว weekly focus\n'
+  const nameObject = JSON.parse(checklists)
+  for (var i = 0; i < nameObject.length; i++) {
+    var noPass = 0
+    const items = nameObject[i].checkItems
+    for (var j = 0; j < items.length; j++) {
+      if (items[j].state == 'complete') {
+        noPass++
+      }
+    }
+    const percent = (noPass / items.length).toFixed(2) * 100
+    listName += nameObject[i].name + " ผ่านแล้ว " + percent + "%\n"
+  }
+  console.log(listName)
+  return message.push("C360124b5c1cfc907a702b9314337ac7b", listName);
 });
