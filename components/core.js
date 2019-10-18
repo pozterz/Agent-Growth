@@ -353,6 +353,42 @@ async function getCardCheckList(weeklyID) {
   })
 }
 
+async function saveWeeklyFocusId(id) {
+  firebase
+    .firestore()
+    .collection("weekly_focus")
+    .doc("weekly_id")
+    .set({ id })
+    .then(docRef => {
+      console.log("id added: ", docRef.id)
+      return
+    })
+    .catch(error => {
+      console.error("Error adding document: ", error)
+    })
+}
+
+async function getWeeklyFocusId() {
+  return new Promise(function (resolve, reject) {
+    firebase
+      .firestore()
+      .collection("weekly_focus")
+      .doc("weekly_id")
+      .get()
+      .then(doc => {
+        if (!doc.exists) {
+          console.log('No such document!');
+        } else {
+          console.log('Document data:', doc.data());
+          return resolve(doc.data().id)
+        }
+      })
+      .catch(error => {
+        console.error("Error adding document: ", error)
+      })
+  })
+}
+
 module.exports = {
   saveGroupId,
   removeGroupId,
@@ -365,5 +401,7 @@ module.exports = {
   isAdmin,
   getUserId,
   getWeeklyID,
-  getCardCheckList
+  getCardCheckList,
+  saveWeeklyFocusId,
+  getWeeklyFocusId
 }
