@@ -21,20 +21,16 @@ exports.AgentGrowth = functions.https.onRequest((req, res) => {
   let msgSource = req.body.events[0].source
   let msg = req.body.events[0].message.text
 
-  console.log(
-    msg,
-    /ยกเลิกวันคอมโบ วันที่ /g.test(msg),
-    /ยกเลิกนัดคอมโบ วันที่ /g.test(msg)
-  )
 
+  const whichDayToCombo = [
+    "คอมโบวันไหน",
+    "วันคอมโบ",
+    "combo วันไหน",
+    "Combo วันไหน",
+    "COMBO วันไหน"
+  ]
   if (
-    [
-      "คอมโบวันไหน",
-      "วันคอมโบ",
-      "combo วันไหน",
-      "Combo วันไหน",
-      "COMBO วันไหน"
-    ].indexOf(msg) > -1
+    whichDayToCombo.includes(msg)
   ) {
     core.getComboDate(reply_token)
     return res.send("OK")
@@ -47,9 +43,7 @@ exports.AgentGrowth = functions.https.onRequest((req, res) => {
     core
       .isAdmin(msgSource)
       .then(querySnapshot => {
-        console.log(querySnapshot)
         if (querySnapshot.size) {
-          console.log("u r admin")
           core.initComboDate(reply_token, msg)
         }
         return res.send("OK")
@@ -66,9 +60,7 @@ exports.AgentGrowth = functions.https.onRequest((req, res) => {
     core
       .isAdmin(msgSource)
       .then(querySnapshot => {
-        console.log(querySnapshot)
         if (querySnapshot.size) {
-          console.log("u r admin")
           core.removeComboDate(reply_token, msg)
         }
         return res.send("OK")
@@ -118,20 +110,15 @@ exports.scheduledFunction = functions.pubsub.schedule("every tue 10:30").timeZon
 });
 
 exports.scheduledEndFunction = functions.pubsub.schedule("every fri 16:30").timeZone('Asia/Bangkok').onRun(async (context) => {
-  // const weeklyIDResponse = await core.getWeeklyID()
-  // console.log('weeklyIDResponse = ' + weeklyIDResponse)
-  // const weeklyObj = JSON.parse(weeklyIDResponse)
-  // const weeklyID = weeklyObj[0].id
   const weeklyID = await core.getWeeklyFocusId()
   const checklists = await core.getCardCheckList(weeklyID)
-  // console.log('checklists = ' + checklists)
 
   var listName = 'วันศุกร์แล้ววววว weekly focus\n'
   const nameObject = JSON.parse(checklists)
-  for (var i = 0; i < nameObject.length; i++) {
+  for (var i = 0;i < nameObject.length;i++) {
     var noPass = 0
     const items = nameObject[i].checkItems
-    for (var j = 0; j < items.length; j++) {
+    for (var j = 0;j < items.length;j++) {
       if (items[j].state == 'complete') {
         noPass++
       }
@@ -139,6 +126,5 @@ exports.scheduledEndFunction = functions.pubsub.schedule("every fri 16:30").time
     const percent = parseInt((noPass / items.length) * 100)
     listName += nameObject[i].name + " ผ่านแล้ว " + percent + "%\n"
   }
-  console.log(listName)
   return message.push("C360124b5c1cfc907a702b9314337ac7b", listName);
 });
