@@ -22,14 +22,15 @@ exports.AgentGrowth = functions.https.onRequest((req, res) => {
   let msg = req.body.events[0].message.text
 
 
+  const whichDayToCombo = [
+    "คอมโบวันไหน",
+    "วันคอมโบ",
+    "combo วันไหน",
+    "Combo วันไหน",
+    "COMBO วันไหน"
+  ]
   if (
-    [
-      "คอมโบวันไหน",
-      "วันคอมโบ",
-      "combo วันไหน",
-      "Combo วันไหน",
-      "COMBO วันไหน"
-    ].indexOf(msg) > -1
+    whichDayToCombo.includes(msg)
   ) {
     core.getComboDate(reply_token)
     return res.send("OK")
@@ -109,20 +110,15 @@ exports.scheduledFunction = functions.pubsub.schedule("every tue 10:30").timeZon
 });
 
 exports.scheduledEndFunction = functions.pubsub.schedule("every fri 16:30").timeZone('Asia/Bangkok').onRun(async (context) => {
-  // const weeklyIDResponse = await core.getWeeklyID()
-  // console.log('weeklyIDResponse = ' + weeklyIDResponse)
-  // const weeklyObj = JSON.parse(weeklyIDResponse)
-  // const weeklyID = weeklyObj[0].id
   const weeklyID = await core.getWeeklyFocusId()
   const checklists = await core.getCardCheckList(weeklyID)
-  // console.log('checklists = ' + checklists)
 
   var listName = 'วันศุกร์แล้ววววว weekly focus\n'
   const nameObject = JSON.parse(checklists)
-  for (var i = 0; i < nameObject.length; i++) {
+  for (var i = 0;i < nameObject.length;i++) {
     var noPass = 0
     const items = nameObject[i].checkItems
-    for (var j = 0; j < items.length; j++) {
+    for (var j = 0;j < items.length;j++) {
       if (items[j].state == 'complete') {
         noPass++
       }
