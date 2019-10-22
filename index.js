@@ -110,16 +110,19 @@ exports.scheduledFunction = functions.pubsub.schedule("every tue 10:30").timeZon
   const weeklyObj = JSON.parse(weeklyIDResponse)
   const weeklyUrl = weeklyObj[0].shortUrl
 
+  core.saveWeeklyFocusId(weeklyObj[0].id)
+
   let msg = `วันนี้วันอังคารแล้ว เขียน weekly focus กันเถอะ 🎉🎉🎉\n${weeklyUrl}`
 
   return message.push("C360124b5c1cfc907a702b9314337ac7b", msg);
 });
 
 exports.scheduledEndFunction = functions.pubsub.schedule("every fri 16:30").timeZone('Asia/Bangkok').onRun(async (context) => {
-  const weeklyIDResponse = await core.getWeeklyID()
+  // const weeklyIDResponse = await core.getWeeklyID()
   // console.log('weeklyIDResponse = ' + weeklyIDResponse)
-  const weeklyObj = JSON.parse(weeklyIDResponse)
-  const weeklyID = weeklyObj[0].id
+  // const weeklyObj = JSON.parse(weeklyIDResponse)
+  // const weeklyID = weeklyObj[0].id
+  const weeklyID = await core.getWeeklyFocusId()
   const checklists = await core.getCardCheckList(weeklyID)
   // console.log('checklists = ' + checklists)
 
@@ -133,7 +136,7 @@ exports.scheduledEndFunction = functions.pubsub.schedule("every fri 16:30").time
         noPass++
       }
     }
-    const percent = (noPass / items.length).toFixed(2) * 100
+    const percent = parseInt((noPass / items.length) * 100)
     listName += nameObject[i].name + " ผ่านแล้ว " + percent + "%\n"
   }
   console.log(listName)
