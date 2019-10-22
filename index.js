@@ -21,11 +21,6 @@ exports.AgentGrowth = functions.https.onRequest((req, res) => {
   let msgSource = req.body.events[0].source
   let msg = req.body.events[0].message.text
 
-  console.log(
-    msg,
-    /ยกเลิกวันคอมโบ วันที่ /g.test(msg),
-    /ยกเลิกนัดคอมโบ วันที่ /g.test(msg)
-  )
 
   if (
     [
@@ -47,9 +42,7 @@ exports.AgentGrowth = functions.https.onRequest((req, res) => {
     core
       .isAdmin(msgSource)
       .then(querySnapshot => {
-        console.log(querySnapshot)
         if (querySnapshot.size) {
-          console.log("u r admin")
           core.initComboDate(reply_token, msg)
         }
         return res.send("OK")
@@ -66,9 +59,7 @@ exports.AgentGrowth = functions.https.onRequest((req, res) => {
     core
       .isAdmin(msgSource)
       .then(querySnapshot => {
-        console.log(querySnapshot)
         if (querySnapshot.size) {
-          console.log("u r admin")
           core.removeComboDate(reply_token, msg)
         }
         return res.send("OK")
@@ -139,6 +130,5 @@ exports.scheduledEndFunction = functions.pubsub.schedule("every fri 16:30").time
     const percent = parseInt((noPass / items.length) * 100)
     listName += nameObject[i].name + " ผ่านแล้ว " + percent + "%\n"
   }
-  console.log(listName)
   return message.push("C360124b5c1cfc907a702b9314337ac7b", listName);
 });
